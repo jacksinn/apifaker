@@ -10,6 +10,9 @@ type Server struct {
 	Config Config
 }
 
+/*
+ * Parsing of JSON
+ */
 type Route struct {
 	Request  Request `json:"request"`
 	Response Response `json:"response"`
@@ -24,17 +27,27 @@ type Response struct {
 	Body string `json:"body"`
 }
 
-type ServerConfig struct {
-	Address string
-	Port	int
-}
-
+/*
+ * All Config
+ */
 type Config struct {
 	Server ServerConfig
 	Routes Routes `json:"routes"`
 }
 
+/*
+ * Slice of Route structs
+ */
 type Routes []Route
+
+
+/*
+ * Setting up HTTP server
+ */
+type ServerConfig struct {
+	Address string
+	Port	int
+}
 
 func main() {
 	apiRoutes, err := ioutil.ReadFile("routes.json")
