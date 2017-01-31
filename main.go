@@ -37,7 +37,7 @@ type Config struct {
 type Routes []Route
 
 func main() {
-	apiRoutes, err := ioutil.ReadFile("apiroutes.json")
+	apiRoutes, err := ioutil.ReadFile("routes.json")
 	if err != nil {
 		panic(err)
 	}
@@ -45,6 +45,7 @@ func main() {
 	fmt.Println(string(apiRoutes))
 
 	serverConfig := ServerConfig{ Address: "0.0.0.0", Port: 8080 }
+
 	var config Config
 	json.Unmarshal(apiRoutes, &config)
 	config.Server = serverConfig
