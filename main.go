@@ -75,23 +75,26 @@ type Config struct {
 }
 
 func main() {
+	//Reading Routes FIle
 	apiRoutes, err := ioutil.ReadFile("routes.json")
+
+	//Panic at the Disco
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(string(apiRoutes))
-
+	//Server Address and Port Setup
 	serverConfig := ServerConfig{Address: "0.0.0.0", Port: 8080 }
 
+	//General Config Setup
 	var config Config
+
+	//Grabbing JSON, storing in Config Struct which parses the JSON automagically
 	json.Unmarshal(apiRoutes, &config)
 
+	//Configuring HTTP Server
 	config.Server = serverConfig
-	fmt.Println(config)
 
-	//http.HandleFunc("/", Handler)
-	//http.ListenAndServe(":8080", nil)
 	server := Server{config}
 	server.Run()
 
