@@ -8,8 +8,18 @@ import (
 )
 
 /*
- * Parsing of JSON
- */
+|--------------------------------------------------------------------------
+| Routes
+|--------------------------------------------------------------------------
+|
+| Here is where the structure of the routing is parsed
+| from the routes.json file
+|
+*/
+type JSONRoutes struct {
+	Routes Routes `json:"routes"`
+}
+
 type Route struct {
 	Request  Request `json:"request"`
 	Response Response `json:"response"`
@@ -25,15 +35,17 @@ type Response struct {
 	Body string `json:"body"`
 }
 
-/*
- * Slice of Route structs
- */
+
 type Routes []Route
 
 /*
- * Setting up HTTP server
- */
-
+|--------------------------------------------------------------------------
+| Server
+|--------------------------------------------------------------------------
+|
+| Here is where the HTTP Server is setup
+|
+*/
 type Server struct {
 	Address string
 	Port    int
@@ -65,14 +77,16 @@ func (server Server) Run() {
 	addr := fmt.Sprintf("%v:%v", server.Address, server.Port)
 	panic(http.ListenAndServe(addr, nil))
 }
-
 /*
- * All Config
- */
-type ParsedRoutes struct {
-	Routes Routes `json:"routes"`
-}
-
+|--------------------------------------------------------------------------
+| Main
+|--------------------------------------------------------------------------
+|
+| The goods. Grabbing Routes file and sending off to be parsed into
+| structs. HTTP Server is setup here too.
+| @todo Refactor more of this to be cleaner and reusable
+|
+*/
 func main() {
 	//Reading Routes FIle
 	apiRoutes, err := ioutil.ReadFile("routes.json")
@@ -83,7 +97,7 @@ func main() {
 	}
 
 	//Route Parsing Setup
-	var routes ParsedRoutes
+	var routes JSONRoutes
 
 	//Grabbing JSON, storing in Config Struct which parses the JSON automagically
 	json.Unmarshal(apiRoutes, &routes)
