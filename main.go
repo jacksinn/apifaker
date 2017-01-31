@@ -39,12 +39,13 @@ type ServerConfig struct {
 }
 
 type Server struct {
-	Config Config
+	Config ServerConfig
+	Routes Routes
 }
 
 func (server Server) getResponse(request *http.Request) Response {
 	//getting our routes from JSON
-	for _, route := range server.Config.Routes {
+	for _, route := range server.Routes {
 		//if Path and Method Match
 		if route.Request.Path == request.URL.Path && route.Request.Method == request.Method {
 			//Respond with route response JSON
@@ -61,16 +62,19 @@ func (server Server) Handle(writer http.ResponseWriter, request *http.Request) {
 }
 
 func (server Server) Run() {
+	//Handler Func Setup
 	http.HandleFunc("/", server.Handle)
-	addr := fmt.Sprintf("%v:%v", server.Config.Server.Address, server.Config.Server.Port)
+	//Setting up addr to listen & serve on, this feels a little crappy, cleanup s.c.s.a and s.c.s.p
+	addr := fmt.Sprintf("%v:%v", server.Config.Address, server.Config.Port)
 	panic(http.ListenAndServe(addr, nil))
 }
+
 
 /*
  * All Config
  */
-type Config struct {
-	Server ServerConfig
+type SetupRoutes struct {
+	//Server ServerConfig
 	Routes Routes `json:"routes"`
 }
 
@@ -83,20 +87,17 @@ func main() {
 		panic(err)
 	}
 
-	//Server Address and Port Setup
-	serverConfig := ServerConfig{Address: "0.0.0.0", Port: 8080 }
-
-	//General Config Setup
-	var config Config
+	//Route Parsing Setup
+	var routes SetupRoutes
 
 	//Grabbing JSON, storing in Config Struct which parses the JSON automagically
-	json.Unmarshal(apiRoutes, &config)
+	json.Unmarshal(apiRoutes, &routes)
 
-	//Configuring HTTP Server
-	config.Server = serverConfig
 
 	//@todo cleanup some of this, feels a little janky
-	server := Server{config}
+	//Server Address and Port Setup
+	serverConfig := ServerConfig{ Address: "127.0.0.1", Port: 8080 }
+	server := Server{Config: serverConfig, Routes: routes.Routes}
 
 	//Protect and Serve
 	server.Run()
