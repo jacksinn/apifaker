@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"encoding/json"
+	"net/http"
 )
 
 type Server struct {
@@ -49,6 +50,10 @@ type ServerConfig struct {
 	Port	int
 }
 
+func handler(writer http.ResponseWriter, request *http.Request) {
+	fmt.Fprintf(writer, "hello World, %s!", request.URL.Path[1:])
+}
+
 func main() {
 	apiRoutes, err := ioutil.ReadFile("routes.json")
 	if err != nil {
@@ -63,6 +68,9 @@ func main() {
 	json.Unmarshal(apiRoutes, &config)
 	config.Server = serverConfig
 	fmt.Println(config)
+
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
 
 
 }
