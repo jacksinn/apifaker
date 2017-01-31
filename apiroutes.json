@@ -3,10 +3,19 @@
     {
       "request": {
         "path": "/",
-        "method": "/"
+        "method": "GET"
       },
       "response": {
         "body": "{\"message\": \"Home\"}"
+      }
+    },
+    {
+      "request": {
+        "path": "/challenges",
+        "method": "GET"
+      },
+      "response": {
+        "body": "{\"challenges\": [{\"name\": \"Challenge 1\",\"description\": \"Challenge 1\"}]}"
       }
     }
   ]
