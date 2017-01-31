@@ -7,9 +7,6 @@ import (
 	"net/http"
 )
 
-type Server struct {
-	Config Config
-}
 
 /*
  * Parsing of JSON
@@ -28,13 +25,6 @@ type Response struct {
 	Body string `json:"body"`
 }
 
-/*
- * All Config
- */
-type Config struct {
-	Server ServerConfig
-	Routes Routes `json:"routes"`
-}
 
 /*
  * Slice of Route structs
@@ -48,6 +38,18 @@ type Routes []Route
 type ServerConfig struct {
 	Address string
 	Port	int
+}
+
+type Server struct {
+	Config Config
+}
+
+/*
+ * All Config
+ */
+type Config struct {
+	Server ServerConfig
+	Routes Routes `json:"routes"`
 }
 
 func handler(writer http.ResponseWriter, request *http.Request) {
