@@ -95,7 +95,10 @@ func main() {
 	//Configuring HTTP Server
 	config.Server = serverConfig
 
+	//@todo cleanup some of this, feels a little janky
 	server := Server{config}
+
+	//Protect and Serve
 	server.Run()
 
 }
