@@ -33,14 +33,11 @@ type Routes []Route
 /*
  * Setting up HTTP server
  */
-type ServerConfig struct {
-	Address string
-	Port    int
-}
 
 type Server struct {
-	Config ServerConfig
-	Routes Routes
+	Address string
+	Port    int
+	Routes  Routes
 }
 
 func (server Server) getResponse(request *http.Request) Response {
@@ -65,16 +62,14 @@ func (server Server) Run() {
 	//Handler Func Setup
 	http.HandleFunc("/", server.Handle)
 	//Setting up addr to listen & serve on, this feels a little crappy, cleanup s.c.s.a and s.c.s.p
-	addr := fmt.Sprintf("%v:%v", server.Config.Address, server.Config.Port)
+	addr := fmt.Sprintf("%v:%v", server.Address, server.Port)
 	panic(http.ListenAndServe(addr, nil))
 }
-
 
 /*
  * All Config
  */
-type SetupRoutes struct {
-	//Server ServerConfig
+type ParsedRoutes struct {
 	Routes Routes `json:"routes"`
 }
 
@@ -88,16 +83,13 @@ func main() {
 	}
 
 	//Route Parsing Setup
-	var routes SetupRoutes
+	var routes ParsedRoutes
 
 	//Grabbing JSON, storing in Config Struct which parses the JSON automagically
 	json.Unmarshal(apiRoutes, &routes)
 
-
-	//@todo cleanup some of this, feels a little janky
 	//Server Address and Port Setup
-	serverConfig := ServerConfig{ Address: "127.0.0.1", Port: 8080 }
-	server := Server{Config: serverConfig, Routes: routes.Routes}
+	server := Server{Address: "127.0.0.1", Port: 8080, Routes: routes.Routes}
 
 	//Protect and Serve
 	server.Run()
