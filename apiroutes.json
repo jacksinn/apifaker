@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "request": {
+        "path": "/",
+        "method": "/"
+      },
+      "response": {
+        "body": "{\"message\": \"Home\"}"
+      }
+    }
+  ]
+}
